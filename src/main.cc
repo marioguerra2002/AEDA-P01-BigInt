@@ -19,7 +19,7 @@ int main() {
   //   std::cout << "num1 no es menor que num2" << std::endl;
   // }
   
-  // // prueba de pre-incremento
+  // prueba de pre-incremento
   // std::cout << "num1: " << num1 << std::endl;
   // ++num1;
   // std::cout << "num1: " << num1 << std::endl;
@@ -27,8 +27,12 @@ int main() {
   // std::cout << "num1: " << num1 << std::endl;
   // num1++;
   // std::cout << "num1: " << num1 << std::endl;
-  // // prueba de pre-decremento
+  //prueba de pre-decremento
   // std::cout << "num1: " << num1 << std::endl;
   // --num1;
   // std::cout << "num1: " << num1 << std::endl;
+  // prueba de post-decremento
+  std::cout << "num1: " << num1 << std::endl;
+  num1--;
+  std::cout << "num1: " << num1 << std::endl;
 }

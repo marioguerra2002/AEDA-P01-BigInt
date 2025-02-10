@@ -134,22 +134,33 @@ BigUnsigned BigUnsigned::operator++(int) {
 
 // pre-decremento
 
-// BigUnsigned& BigUnsigned::operator--() {
-//   // decrementamos el ultimo digito
-//   digits[digits.size() - 1]--;
-//   // acarreo en caso de que sea necesario
-//   for (int i = digits.size() - 1; i > 0; i--) {
-//     if (digits[i] == -1) {
-//       digits[i] = 9;
-//       digits[i - 1]--;
-//     }
-//   }
-//   // en caso de que el primer digito necesite también acarreo
-//   if (digits[0] == 0) {
-//     digits.erase(digits.begin());
-//   }
+BigUnsigned& BigUnsigned::operator--() {
+  // decrementamos el ultimo digito
+  // en caso de que sea necesario acarreo (que el ultimo digito sea 0)
+  // decrementamos el siguiente digito
+  std::vector<unsigned char> aux = digits;
+  aux[digits.size() - 1]--;
+  for (int i = digits.size() - 1; i > 0; i--) {
+    if (aux[i] == 255) {
+      aux[i] = 9;
+      aux[i - 1]--;
+    }
+  }
+  // en caso de que el primer digito necesite también acarreo
+  if (aux[0] == 0) {
+    aux.erase(aux.begin());
+  }
+  digits = aux;
+  return *this;
+}
 
-//   return *this;
-// }
+// // post-decremento
+BigUnsigned BigUnsigned::operator--(int) {
+  BigUnsigned temp = *this; // guardamos el valor actual
+  --(*this); // decrementamos el valor
+  return temp; // devolvemos el valor guardado del principio
+}
+
+
 
 
