@@ -5,6 +5,10 @@ BigUnsigned::BigUnsigned(unsigned n) {
   std::string input;
   std::cout << "Ingrese el número: ";
   std::cin >> input;
+  // en caso de que no se haya ingresado un numero
+  if (input.size() == 0) {
+    input = "0";
+  }
 
   // Redimensionamos el vector al tamaño correcto
   digits.resize(input.size());
@@ -159,6 +163,129 @@ BigUnsigned BigUnsigned::operator--(int) {
   BigUnsigned temp = *this; // guardamos el valor actual
   --(*this); // decrementamos el valor
   return temp; // devolvemos el valor guardado del principio
+}
+
+// // operadores aritmeticos
+
+// friend operator+
+
+BigUnsigned operator+(const BigUnsigned& num1, const BigUnsigned& num2) {
+  // // creamos un vector auxiliar para guardar el resultado
+  // std::vector<unsigned char> aux;
+  // std::cout << "num1: " << num1 << std::endl;
+  // std::cout << "num2: " << num2 << std::endl;
+  // // primero ver cual es el vector mas grande (el numero mas grande)
+  // // redimensionamos el vector al tamaño correcto
+  // // if (num1.digits.size() > num2.digits.size()) {
+  // //   aux.resize(num1.digits.size());
+  // // } else {
+  // //   aux.resize(num2.digits.size());
+  // // } 
+  // // en caso de que un numero sea 0, devolvemos el otro numero
+  // if (num1.getDigits()[0] == '0') {
+  //   std::cout << "num1 es 0" << std::endl;
+  //   return num2;
+  // } else if (num2.getDigits()[0] == '0') {
+  //   std::cout << "num2 es 0" << std::endl;
+  //   return num1;
+  // }
+  // BigUnsigned result;
+  // return result;
+  BigUnsigned result;
+  std::vector<unsigned char> aux;
+
+  // Tamaño del número más grande
+  size_t max_size = std::max(num1.digits.size(), num2.digits.size()); // Tamaño del número más grande
+  aux.resize(max_size + 1, 0); // Se deja espacio para el acarreo
+
+  int carry = 0; // Acarreo inicial
+  int i = num1.digits.size() - 1, j = num2.digits.size() - 1, k = max_size; 
+  // Sumamos los dígitos de ambos números y el acarreo
+  // el acarreo es la division de la suma entre 10 
+
+  while (i >= 0 || j >= 0 || carry) {
+    int sum = carry;
+    if (i >= 0) sum += num1.digits[i--];
+    if (j >= 0) sum += num2.digits[j--];
+
+    carry = sum / 10;
+    aux[k--] = sum % 10;
+  }
+
+  // Si el primer dígito es 0, lo eliminamos
+  if (aux[0] == 0) {
+    aux.erase(aux.begin());
+  }
+
+  result.digits = aux;
+  return result;
+}
+
+  
+
+
+BigUnsigned& BigUnsigned::operator-(const BigUnsigned& other) const {
+  // // creamos un vector auxiliar para guardar el resultado
+  // std::vector<unsigned char> aux;
+  // // redimensionamos el vector al tamaño correcto
+  // aux.resize(digits.size());
+  // // inicializamos el vector en 0
+  // for (unsigned i = 0; i < aux.size(); i++) {
+  //   aux[i] = 0;
+  // }
+  // // restamos los digitos
+  // for (int i = digits.size() - 1; i >= 0; i--) {
+  //   aux[i] += digits[i] - num.digits[i];
+  //   if (aux[i] < 0) {
+  //     aux[i] += 10;
+  //     aux[i - 1]--;
+  //   }
+  // }
+  // // en caso de que el primer digito sea 0
+  // if (aux[0] == 0) {
+  //   aux.erase(aux.begin());
+  // }
+  // BigUnsigned result;
+  // result.digits = aux;
+  // return result;
+  // Verificar que el número actual (*this) sea mayor o igual que el otro
+  if (*this < other) {
+    throw std::underflow_error("Resultado negativo no permitido en BigUnsigned");
+    // no se permiten resultados negativos
+  }
+
+  // Crear un objeto para almacenar el resultado
+  BigUnsigned* result = new BigUnsigned(*this); // Copiamos *this
+
+  int borrow = 0;  // Variable para manejar los "préstamos"
+  int i = result->digits.size() - 1; // Última posición de *this
+  int j = other.digits.size() - 1;   // Última posición de other
+
+  while (i >= 0) {
+    int diff = result->digits[i] - borrow;
+
+    if (j >= 0) {
+        diff -= other.digits[j];
+        j--;
+    }
+
+    if (diff < 0) {
+      diff += 10;   // Se toma un préstamo de la siguiente posición
+      borrow = 1;   // Indicar que en la siguiente iteración hay préstamo
+    } else {
+      borrow = 0;   // No hay préstamo si la resta es positiva
+    }
+
+    result->digits[i] = diff;
+    i--;
+  }
+
+  // Eliminar ceros a la izquierda
+  while (result->digits.size() > 1 && result->digits[0] == 0) {
+    result->digits.erase(result->digits.begin());
+  }
+
+  return *result;
 }
 
 

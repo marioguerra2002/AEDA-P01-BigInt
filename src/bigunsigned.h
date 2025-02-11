@@ -13,7 +13,12 @@ class BigUnsigned {
     BigUnsigned(const unsigned char*); 
     // constructor que recibe un arreglo de char el cual simboliza el numero
     BigUnsigned(const BigUnsigned&);
+    std::vector<unsigned char> getDigits() const {
+      return digits;
+    }
     // constructor de copia
+    
+    //constructor por defecto
 
     BigUnsigned& operator=(const BigUnsigned&); // operador de asignacion
 
